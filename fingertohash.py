@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import hashlib
 
 def load_and_preprocess_image(image_path):
@@ -25,7 +24,7 @@ def hash_features(descriptors):
     # Convert descriptors to a single string
     descriptors_str = ''.join(descriptor.tobytes().decode('latin1') for descriptor in descriptors)
     
-    # Hash the string using SHA-256
+    # Hash the string using SHA-512
     sha512 = hashlib.sha512()
     sha512.update(descriptors_str.encode('latin1'))
     
