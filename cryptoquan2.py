@@ -34,21 +34,21 @@ def measure_bits(encoded_bits, bases):
     return measured_bits
 
 # تابع برای تولید کلید نهایی
-def generate_final_key(alice_bases, bob_bases, bits):
+def generate_final_key(node_bases, basestation_bases, bits):
     key = []
-    for alice_base, bob_base, bit in zip(alice_bases, bob_bases, bits):
-        if alice_base == bob_base:
+    for node_base, basestation_base, bit in zip(node_bases, basestation_bases, bits):
+        if node_base == basestation_base:
             key.append(bit)
     return key
 
-# تابع برای تبدیل متن به بیت‌ها
+
 def text_to_bits(text):
     bits = []
     for char in text:
         bits.extend([int(bit) for bit in format(ord(char), '08b')])
     return bits
 
-# تابع برای تبدیل بیت‌ها به متن
+
 def bits_to_text(bits):
     chars = []
     for b in range(len(bits) // 8):
@@ -61,14 +61,14 @@ def encrypt_text(text):
     bits = text_to_bits(text)
     key_length = len(bits)
 
-    alice_bits = generate_random_bits(key_length)
-    alice_bases = generate_random_bases(key_length)
-    encoded_bits = encode_bits(alice_bits, alice_bases)
+    node_bits = generate_random_bits(key_length)
+    node_bases = generate_random_bases(key_length)
+    encoded_bits = encode_bits(node_bits, node_bases)
 
-    bob_bases = generate_random_bases(key_length)
-    bob_measured_bits = measure_bits(encoded_bits, bob_bases)
+    basestation_bases = generate_random_bases(key_length)
+    basestation_measured_bits = measure_bits(encoded_bits, basestation_bases)
 
-    final_key = generate_final_key(alice_bases, bob_bases, alice_bits)
+    final_key = generate_final_key(node_bases, basestation_bases, node_bits)
 
     if len(final_key) < key_length:
         final_key.extend(np.random.randint(0, 2, key_length - len(final_key)).tolist())
@@ -78,27 +78,17 @@ def encrypt_text(text):
     encrypted_bits = [bit ^ key_bit for bit, key_bit in zip(bits, final_key)]
     encrypted_text = bits_to_text(encrypted_bits)
 
-    return encrypted_text, bob_bases, alice_bases, final_key
+    return encrypted_text, final_key
 
-# تابع برای رمزگشایی متن با استفاده از پروتکل BB84
-def decrypt_text(encrypted_text, bob_bases, alice_bases, final_key):
-    encrypted_bits = text_to_bits(encrypted_text)
-    key_length = len(encrypted_bits)
 
-    decrypted_bits = [bit ^ key_bit for bit, key_bit in zip(encrypted_bits, final_key)]
-    decrypted_text = bits_to_text(decrypted_bits)
+def encrypt(image_path):
+    image_hash = fingertohash.generate_fingerprint_hash(image_path)
+    # رمزنگاری متن
+    encrypted_text, final_key = encrypt_text(image_hash)
+    return encrypted_text, final_key
 
-    return decrypted_text
 
-image_path = "fingerprint.jpg"
-image_hash = fingertohash.generate_fingerprint_hash(image_path)
-
-# رمزنگاری متن
-encrypted_text, bob_bases, alice_bases, final_key = encrypt_text(image_hash)
-# رمزگشایی متن
-decrypted_text = decrypt_text(encrypted_text, bob_bases, alice_bases, final_key)
-
-# نمایش متن اصلی، متن رمزنگاری‌شده و متن رمزگشایی‌شده
-print(f"Original Text: {image_hash}")
-print(f"Encrypted Text: {encrypted_text}")
-print(f"Decrypted Text: {decrypted_text}")
+if __name__ == "__main__":
+    image_path = "fingerprint.jpg"
+    encrypted_text,_  = encrypt(image_path)
+    print(f"Encrypted Text: {encrypted_text}")
