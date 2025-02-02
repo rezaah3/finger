@@ -1,6 +1,7 @@
 import cv2
 import hashlib
 
+
 def load_and_preprocess_image(image_path):
     # Load the fingerprint image
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -9,9 +10,9 @@ def load_and_preprocess_image(image_path):
     image = cv2.resize(image, (1024, 1024))
     
     # Apply Gaussian Blur to reduce noise
-    image = cv2.GaussianBlur(image, (5, 5), 0)
-    
+    image = cv2.GaussianBlur(image, (5, 5), 0)    
     return image
+
 
 def extract_features(image):
     # Use ORB (Oriented FAST and Rotated BRIEF) to detect keypoints and descriptors
@@ -19,6 +20,7 @@ def extract_features(image):
     keypoints, descriptors = orb.detectAndCompute(image, None)
     
     return keypoints, descriptors
+
 
 def hash_features(descriptors):
     # Convert descriptors to a single string
@@ -29,6 +31,7 @@ def hash_features(descriptors):
     sha512.update(descriptors_str.encode('latin1'))
     
     return sha512.hexdigest()
+
 
 def generate_fingerprint_hash(image_path):
     # Load and preprocess the image
@@ -45,6 +48,7 @@ def generate_fingerprint_hash(image_path):
     hash_result = hash_features(descriptors)
     
     return hash_result
+
 
 if __name__ == "__main__":
     image_path = "fingerprint.jpg"  # Replace with the path to your fingerprint image
