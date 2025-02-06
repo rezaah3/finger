@@ -1,6 +1,7 @@
 import sqlite3
 import json
 
+
 def receive_data():
     conn = sqlite3.connect('example.db')
     c = conn.cursor()
