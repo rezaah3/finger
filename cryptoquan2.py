@@ -77,7 +77,6 @@ def encrypt_text(text):
 
     encrypted_bits = [bit ^ key_bit for bit, key_bit in zip(bits, final_key)]
     encrypted_text = bits_to_text(encrypted_bits)
-
     return encrypted_text, final_key
 
 
