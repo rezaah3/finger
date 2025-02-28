@@ -1,23 +1,25 @@
-import socket  
+import socket 
+import json 
+import cryptoquantum
 
-# ایجاد سوکت  
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-
-# آدرس و پورت واسط را مشخص کنید  
+ 
 intermediary_address = ('localhost', 65432)  
 
-# اتصال به واسط  
 client_socket.connect(intermediary_address)  
 
-# دریافت رمز عبور از کاربر  
-password = input("رمز عبور خود را وارد کنید: ")  
+input('Are You Ready ?')
+image_path = "fingerprint.jpg"
+encrypted_image, final_key = cryptoquantum.encrypt(image_path)
+final_key = json.dumps(final_key)
+password_list = [encrypted_image, final_key]
+password_json = json.dumps(password_list)
+ 
+client_socket.sendall(password_json.encode())  
 
-# ارسال رمز عبور به واسط  
-client_socket.sendall(password.encode())  
-
-# دریافت نتیجه از واسط  
+ 
 result = client_socket.recv(1024).decode()  
-print("نتیجه:", result)  
+print("Result: ", result)  
 
-# بستن سوکت  
+ 
 client_socket.close()
