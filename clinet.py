@@ -1,6 +1,7 @@
 # client.py  
 import socket  
 
+print(k for k in range(10))  
 HOST = '127.0.0.1'  
 PORT = 65432  
 
