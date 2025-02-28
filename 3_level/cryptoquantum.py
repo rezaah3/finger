@@ -2,38 +2,33 @@ import numpy as np
 import random
 import fingertohash
 
-# تعریف پایه‌ها
+
 BASES = ['+', 'x']
 
-# تابع برای تولید رشته تصادفی از بیت‌ها
 def generate_random_bits(length):
     return np.random.randint(0, 2, length).tolist()
 
-# تابع برای تولید رشته تصادفی از پایه‌ها
 def generate_random_bases(length):
     return [random.choice(BASES) for _ in range(length)]
 
-# تابع برای رمزنگاری بیت‌ها با استفاده از پایه‌ها
 def encode_bits(bits, bases):
     encoded_bits = []
     for bit, base in zip(bits, bases):
         if base == '+':
             encoded_bits.append(bit)
-        else:  # base == 'x'
-            encoded_bits.append(bit ^ 1)  # بیت‌ها در پایه قطری برعکس می‌شوند
+        else:  
+            encoded_bits.append(bit ^ 1) 
     return encoded_bits
 
-# تابع برای اندازه‌گیری فوتون‌ها با استفاده از پایه‌ها
 def measure_bits(encoded_bits, bases):
     measured_bits = []
     for encoded_bit, base in zip(encoded_bits, bases):
         if base == '+':
             measured_bits.append(encoded_bit)
-        else:  # base == 'x'
-            measured_bits.append(encoded_bit ^ 1)  # بیت‌ها در پایه قطری برعکس می‌شوند
+        else: 
+            measured_bits.append(encoded_bit ^ 1) 
     return measured_bits
 
-# تابع برای تولید کلید نهایی
 def generate_final_key(node_bases, basestation_bases, bits):
     key = []
     for node_base, basestation_base, bit in zip(node_bases, basestation_bases, bits):
@@ -41,13 +36,11 @@ def generate_final_key(node_bases, basestation_bases, bits):
             key.append(bit)
     return key
 
-
 def text_to_bits(text):
     bits = []
     for char in text:
         bits.extend([int(bit) for bit in format(ord(char), '08b')])
     return bits
-
 
 def bits_to_text(bits):
     chars = []
@@ -56,7 +49,6 @@ def bits_to_text(bits):
         chars.append(chr(int(''.join(str(bit) for bit in byte), 2)))
     return ''.join(chars)
 
-# تابع برای رمزنگاری متن با استفاده از پروتکل BB84
 def encrypt_text(text):
     bits = text_to_bits(text)
     key_length = len(bits)
@@ -82,7 +74,7 @@ def encrypt_text(text):
 
 def encrypt(image_path):
     image_hash = fingertohash.generate_fingerprint_hash(image_path)
-    # رمزنگاری متن
+
     encrypted_text, final_key = encrypt_text(image_hash)
     return encrypted_text, final_key
 
