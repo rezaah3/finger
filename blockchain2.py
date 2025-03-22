@@ -27,7 +27,8 @@ class Blockchain:
     def create_block(self, previous_hash):  
         index = len(self.chain) + 1  
         timestamp = time.time()  
-        block = Block(index, previous_hash, timestamp, self.current_transactions, self.hash(block))  
+        block = Block(index, previous_hash, timestamp, self.current_transactions, '')  # هش را موقتا خالی بگذارید  
+        block.hash = self.hash(block)  # حالا هش را محاسبه و به بلاک اضافه کنید  
         self.current_transactions = []  # خالی کردن معاملات  
         self.chain.append(block)  
         return block  
