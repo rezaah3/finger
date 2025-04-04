@@ -71,38 +71,36 @@ def bits_to_text(bits):
     return ''.join(chars)
 
 # تابع رمزگذاری با استفاده از پروتکل BB84 و ماتریس اسپارس
-def encrypt_text(text, size=64, density=0.1):
-    bits = text_to_bits(text)
-    key_length = size * size
+def encrypt_text(text, density=0.1):  
+    bits = text_to_bits(text)  
+    key_length = len(bits)  # تعیین طول کلید بر اساس طول بیت‌ها  
 
-    # پروتکل BB84
-    node_bits = generate_random_bits(key_length)
-    node_bases = generate_random_bases(key_length)
-    encoded_bits = encode_bits(node_bits, node_bases)
-    basestation_bases = generate_random_bases(key_length)
-    basestation_measured_bits = measure_bits(encoded_bits, basestation_bases)
-    final_key = generate_final_key(node_bases, basestation_bases, node_bits)
+    # پروتکل BB84  
+    node_bits = generate_random_bits(key_length)  
+    node_bases = generate_random_bases(key_length)  
+    encoded_bits = encode_bits(node_bits, node_bases)  
+    basestation_bases = generate_random_bases(key_length)  
+    basestation_measured_bits = measure_bits(encoded_bits, basestation_bases)  
+    final_key = generate_final_key(node_bases, basestation_bases, node_bits)  
 
-    # بررسی طول کلید نهایی
-    if len(final_key) < key_length:
-        final_key.extend(np.random.randint(0, 2, key_length - len(final_key)).tolist())
-    elif len(final_key) > key_length:
-        final_key = final_key[:key_length]
+    # بررسی طول کلید نهایی  
+    if len(final_key) < key_length:  
+        final_key.extend(np.random.randint(0, 2, key_length - len(final_key)).tolist())  
+    elif len(final_key) > key_length:  
+        final_key = final_key[:key_length]  
 
-    # ایجاد ماتریس اسپارس
-    sparse_matrix = generate_sparse_matrix(size, density)
+    # ایجاد ماتریس اسپارس با توجه به طول final_key  
+    size = int(np.ceil(np.sqrt(len(final_key))))  # محاسبه سایز بر اساس کلید  
+    sparse_matrix = generate_sparse_matrix(size, density)  
 
-    # ضرب ماتریس اسپارس در بیت‌ها
-    encrypted_bits = sparse_matrix_multiply(sparse_matrix, final_key)
+    # ضرب ماتریس اسپارس در بیت‌ها  
+    encrypted_bits = sparse_matrix_multiply(sparse_matrix, final_key)  
 
-    # کلید رمزگذاری (ماتریس اسپارس)
-    key = sparse_matrix
-
-    return encrypted_bits, key
+    return encrypted_bits, sparse_matrix  
 
 def encrypt(image_path, size=64, density=0.1):
     image_hash = fingertohash.generate_fingerprint_hash(image_path)
-    encrypted_bits, final_key = encrypt_text(image_hash, size, density)
+    encrypted_bits, final_key = encrypt_text(image_hash, density)
     return encrypted_bits, final_key
 
 if __name__ == "__main__":

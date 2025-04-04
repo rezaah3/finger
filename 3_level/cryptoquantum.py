@@ -55,10 +55,7 @@ def encrypt_text(text):
 
     node_bits = generate_random_bits(key_length)
     node_bases = generate_random_bases(key_length)
-    encoded_bits = encode_bits(node_bits, node_bases)
-
     basestation_bases = generate_random_bases(key_length)
-    basestation_measured_bits = measure_bits(encoded_bits, basestation_bases)
 
     final_key = generate_final_key(node_bases, basestation_bases, node_bits)
 
