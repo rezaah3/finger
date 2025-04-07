@@ -99,8 +99,6 @@ def run_socket():
 
     print("Socket Server Running...")
 
-    correct_decrypted_image = 'cc678ccfdbe0be15e5e1adbbe6f0ceda6f4c01f9c24946f8f487ade4a9ec448067c8003f62cbe3bc6eaabf6bcabbadc162b733d2145b742d61ed528a5223ae1e'
-
     while True:
         connection, client_address = server_socket.accept()
         try:
